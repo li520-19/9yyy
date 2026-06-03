@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>九悦幸福·快乐平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF2442', // 小红书红
+                        secondary: '#333333',
+                        accent: '#FF9500',
+                        success: '#07C160',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#DCDFE6',
+                            300: '#C0C4CC',
+                            400: '#909399',
+                            500: '#606266',
+                            600: '#303133',
+                            700: '#1E1E1E',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .page { @apply min-h-screen bg-gray-50 pb-14; }
+            .sub-page { @apply min-h-screen bg-gray-50 pb-14 pt-11; }
+            .card { @apply bg-white rounded-lg overflow-hidden shadow-sm; }
+            .btn-primary { @apply bg-primary text-white rounded-full py-2 px-4 text-center font-medium text-sm; }
+            .btn-outline { @apply border border-primary text-primary rounded-full py-2 px-4 text-center font-medium text-sm; }
+            .list-item { @apply flex items-center justify-between py-3 px-4 border-b border-gray-100 bg-white; }
+            .tab-active { @apply text-primary font-medium border-b-2 border-primary; }
+            .scroll-x { @apply overflow-x-auto whitespace-nowrap scrollbar-hide; }
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+        }
+    </style>
+</head>
+<body class="m-0 p-0 font-sans text-gray-600">
+<!-- 顶部导航栏 -->
+<div id="mainNav" class="fixed top-0 left-0 w-full h-11 bg-white border-b border-gray-100 flex items-center justify-center z-50">
+    <h1 class="text-lg font-medium text-gray-700" id="pageTitle">九悦幸福</h1>
+    <button id="backBtn" onclick="goBack()" class="absolute left-4 text-gray-500 hidden">
+        <i class="fa fa-chevron-left text-lg"></i>
+    </button>
+</div>
+
+<!-- 内容区域 -->
+<div class="pt-11">
+    <!-- ==================== 1. 首页 - 小红书信息流 ==================== -->
+    <div id="page-home" class="page block">
+        <!-- 顶部分类标签 -->
+        <div class="bg-white border-b border-gray-100 sticky top-11 z-40">
+            <div class="scroll-x px-4 py-2">
+                <button onclick="switchCategory('tangquan')" id="cat-tangquan" class="tab-active inline-block px-3 py-1 text-sm mr-4">九悦幸福汤泉</button>
+                <button onclick="switchCategory('shengyan')" id="cat-shengyan" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">九悦幸福生日宴</button>
+                <button onclick="switchCategory('julebu')" id="cat-julebu" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">企业家快乐俱乐部</button>
+                <button onclick="switchCategory('shangxie')" id="cat-shangxie" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">商协会活动基地</button>
+                <button onclick="switchCategory('all')" id="cat-all" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">全部</button>
+            </div>
+        </div>
+
+        <!-- 首页Banner -->
+        <div class="mx-4 my-3">
+            <div class="card p-4 bg-gradient-to-r from-primary/10 to-primary/5">
+                <p class="text-center text-gray-700 font-medium">记录幸福 · 发布活动 · 链接人脉 · 玩转九悦</p>
+            </div>
+        </div>
+
+        <!-- 双列瀑布流信息流 -->
+        <div id="feed-container" class="grid grid-cols-2 gap-2 px-2">
+            <!-- 内容由JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- ==================== 2. 活动页 - 聚会/项目/报名中心 ==================== -->
+    <div id="page-event" class="page hidden">
+        <!-- 顶部分类标签 -->
+        <div class="bg-white border-b border-gray-100 sticky top-11 z-40">
+            <div class="scroll-x px-4 py-2">
+                <button onclick="switchEventCategory('all')" id="event-all" class="tab-active inline-block px-3 py-1 text-sm mr-4">全部活动</button>
+                <button onclick="switchEventCategory('tangquan')" id="event-tangquan" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">汤泉体验</button>
+                <button onclick="switchEventCategory('shengyan')" id="event-shengyan" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">生日派对</button>
+                <button onclick="switchEventCategory('julebu')" id="event-julebu" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">企业家俱乐部</button>
+                <button onclick="switchEventCategory('shangxie')" id="event-shangxie" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">商协会活动</button>
+                <button onclick="switchEventCategory('yangsheng')" id="event-yangsheng" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">养生沙龙</button>
+                <button onclick="switchEventCategory('tuanjian')" id="event-tuanjian" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">娱乐团建</button>
+            </div>
+        </div>
+
+        <!-- 活动列表 -->
+        <div id="event-container" class="px-4 py-3 space-y-4">
+            <!-- 内容由JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- ==================== 3. 发布页 - 会员发圈/发笔记 ==================== -->
+    <div id="page-publish" class="page hidden">
+        <div class="px-4 py-8">
+            <h2 class="text-xl font-bold text-center mb-8">选择发布类型</h2>
+            
+            <div class="space-y-6">
+                <!-- 发图文 -->
+                <div onclick="goToSubPage('publish-image')" class="card p-6 flex items-center gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                        <i class="fa fa-picture-o text-primary text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-1">发图文</h3>
+                        <p class="text-sm text-gray-500">分享你的幸福时刻，发布小红书风格笔记</p>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-300"></i>
+                </div>
+
+                <!-- 发起活动 -->
+                <div onclick="goToSubPage('publish-event')" class="card p-6 flex items-center gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div class="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center">
+                        <i class="fa fa-calendar-plus-o text-success text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-1">发起活动</h3>
+                        <p class="text-sm text-gray-500">组织俱乐部聚会、生日派对、团建活动</p>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-300"></i>
+                </div>
+
+                <!-- 开直播 -->
+                <div onclick="goToSubPage('publish-live')" class="card p-6 flex items-center gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center">
+                        <i class="fa fa-video-camera text-red-500 text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-1">开直播</h3>
+                        <p class="text-sm text-gray-500">开启直播，分享活动现场和快乐生活</p>
+                    </div>
+                    <i class="fa fa-chevron-right text-gray-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. 直播页 - 娱乐/聚会/项目分享 ==================== -->
+    <div id="page-live" class="page hidden">
+        <!-- 顶部分类标签 -->
+        <div class="bg-white border-b border-gray-100 sticky top-11 z-40">
+            <div class="scroll-x px-4 py-2">
+                <button onclick="switchLiveCategory('all')" id="live-all" class="tab-active inline-block px-3 py-1 text-sm mr-4">全部直播</button>
+                <button onclick="switchLiveCategory('tangquan')" id="live-tangquan" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">汤泉慢直播</button>
+                <button onclick="switchLiveCategory('shengyan')" id="live-shengyan" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">生日宴现场</button>
+                <button onclick="switchLiveCategory('julebu')" id="live-julebu" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">俱乐部聚会</button>
+                <button onclick="switchLiveCategory('shangxie')" id="live-shangxie" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">商协会活动</button>
+                <button onclick="switchLiveCategory('yangsheng')" id="live-yangsheng" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">养生知识</button>
+                <button onclick="switchLiveCategory('yule')" id="live-yule" class="inline-block px-3 py-1 text-sm text-gray-500 mr-4">娱乐才艺</button>
+            </div>
+        </div>
+
+        <!-- 直播列表 -->
+        <div id="live-container" class="grid grid-cols-2 gap-2 px-2 py-3">
+            <!-- 内容由JS动态生成 -->
+        </div>
+    </div>
+
+    <!-- ==================== 5. 我的 - 个人中心 ==================== -->
+    <div id="page-mine" class="page hidden">
+        <!-- 顶部个人信息 -->
+        <div class="bg-white p-6">
+            <div class="flex items-center gap-4">
+                <div class="w-20 h-20 rounded-full bg-gray-200 overflow-hidden">
+                    <img src="https://picsum.photos/200/200?random=30" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <h2 class="text-xl font-bold">管理员</h2>
+                        <span class="bg-primary/10 text-primary text-xs px-2 py-1 rounded">快乐合伙人</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fa fa-diamond mr-1"></i>快乐值：12860</span>
+                        <span><i class="fa fa-star mr-1"></i>积分：5680</span>
+                    </div>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+        </div>
+
+        <!-- 功能菜单 -->
+        <div class="mt-3 bg-white">
+            <div onclick="goToSubPage('my-posts')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-file-text-o text-gray-400"></i>
+                    <span>我的发布</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+            <div onclick="goToSubPage('my-events')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-calendar-o text-gray-400"></i>
+                    <span>我的活动</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+            <div onclick="goToSubPage('my-joined')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-check-square-o text-gray-400"></i>
+                    <span>我报名的</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+            <div onclick="goToSubPage('my-coupons')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-ticket text-gray-400"></i>
+                    <span>我的优惠券</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+            <div onclick="goToSubPage('my-orders')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-shopping-cart text-gray-400"></i>
+                    <span>我的订单</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+        </div>
+
+        <div class="mt-3 bg-white">
+            <div onclick="goToSubPage('member-center')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-vcard-o text-gray-400"></i>
+                    <span>会员中心</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+            <div onclick="goToSubPage('merchant-join')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-building-o text-gray-400"></i>
+                    <span>商家入驻</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+            <div onclick="goToSubPage('help')" class="list-item cursor-pointer hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <i class="fa fa-question-circle-o text-gray-400"></i>
+                    <span>帮助与客服</span>
+                </div>
+                <i class="fa fa-chevron-right text-gray-300"></i>
+            </div>
+        </div>
+
+        <!-- 底部Slogan -->
+        <div class="mt-8 text-center text-gray-400 text-sm">
+            <p>经营幸福 · 分享幸福 · 收获幸福</p>
+            <p class="mt-2">九悦幸福·快乐平台 v1.0</p>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 发图文 ==================== -->
+    <div id="sub-publish-image" class="sub-page hidden">
+        <div class="px-4 py-4">
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">上传图片/视频</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <i class="fa fa-plus text-gray-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">标题</label>
+                <input type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder="分享你的幸福时刻">
+            </div>
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">内容</label>
+                <textarea class="w-full px-4 py-2 border border-gray-200 rounded-lg h-32" placeholder="写下你的感受..."></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">添加位置</label>
+                <input type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg" value="九悦幸福汤泉（抚顺店）" readonly>
+            </div>
+            <div class="mb-6">
+                <label class="text-sm text-gray-600 block mb-2">选择话题</label>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">九悦幸福汤泉</span>
+                    <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">九悦幸福生日宴</span>
+                    <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">企业家快乐俱乐部</span>
+                    <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">养生日常</span>
+                </div>
+            </div>
+            <button class="btn-primary w-full">发布笔记</button>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 发起活动 ==================== -->
+    <div id="sub-publish-event" class="sub-page hidden">
+        <div class="px-4 py-4">
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">活动封面</label>
+                <div class="aspect-[16/9] bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                    <i class="fa fa-plus text-gray-400 text-2xl"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">活动名称</label>
+                <input type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder="输入活动名称">
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="text-sm text-gray-600 block mb-2">开始时间</label>
+                    <input type="datetime-local" class="w-full px-4 py-2 border border-gray-200 rounded-lg">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600 block mb-2">结束时间</label>
+                    <input type="datetime-local" class="w-full px-4 py-2 border border-gray-200 rounded-lg">
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="text-sm text-gray-600 block mb-2">活动地点</label>
+                <input type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg" value="九悦幸福汤泉（抚顺店）">
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="text-sm text-gray-600 block mb-2">人数限制</label>
+                    <input type="number" class="w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder="最多人数">
+                </div>
+                <div>
+                    <label class="text-sm text-gray-600 block mb-2">活动费用</label>
+                    <input type="number" class="w-full px-4 py-2 border border-gray-200 rounded-lg" placeholder="0为免费">
+                </div>
+            </div>
+            <div class="mb-6">
+                <label class="text-sm text-gray-600 block mb-2">活动介绍</label>
+                <textarea class="w-full px-4 py-2 border border-gray-200 rounded-lg h-32" placeholder="详细介绍活动内容..."></textarea>
+            </div>
+            <button class="btn-primary w-full">发布活动</button>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 开直播 ==================== -->
+    <div id="sub-publish-live" class="sub-page hidden">
+        <div class="px-4 py-8 text-center">
+            <div class="w-32 h-32 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa fa-video-camera text-red-500 text-5xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-2">准备开始直播</h2>
+            <p class="text-gray-500 mb-8">分享你的快乐生活，和大家一起互动</p>
+            <div class="mb-6">
+                <input type="text" class="w-full px-4 py-2 border border-gray-200 rounded-lg text-center" placeholder="输入直播标题">
+            </div>
+            <button class="btn-primary w-full py-3 text-lg">开始直播</button>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 我的发布 ==================== -->
+    <div id="sub-my-posts" class="sub-page hidden">
+        <div class="grid grid-cols-2 gap-2 px-2 py-3">
+            <div class="card m-1">
+                <div class="aspect-[3/4] bg-gray-200 relative">
+                    <img src="https://picsum.photos/300/400?random=1" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="p-2">
+                    <p class="text-sm line-clamp-2 mb-1">周末和闺蜜来九悦汤泉放松，太舒服了！</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span><i class="fa fa-heart mr-1"></i>128</span>
+                        <span><i class="fa fa-comment mr-1"></i>23</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card m-1">
+                <div class="aspect-[3/4] bg-gray-200 relative">
+                    <img src="https://picsum.photos/300/400?random=2" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="p-2">
+                    <p class="text-sm line-clamp-2 mb-1">企业家俱乐部茶话会圆满结束</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span><i class="fa fa-heart mr-1"></i>256</span>
+                        <span><i class="fa fa-comment mr-1"></i>45</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 我的活动 ==================== -->
+    <div id="sub-my-events" class="sub-page hidden">
+        <div class="px-4 py-3 space-y-4">
+            <div class="card">
+                <div class="aspect-[16/9] bg-gray-200">
+                    <img src="https://picsum.photos/600/338?random=10" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">九悦汤泉周末体验日</h3>
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <i class="fa fa-calendar mr-2"></i>
+                        <span>6月10日 周六 10:00-22:00</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-green-500 text-sm">已报名 86/100人</span>
+                        <button class="btn-outline text-xs py-1 px-2">管理活动</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 我报名的 ==================== -->
+    <div id="sub-my-joined" class="sub-page hidden">
+        <div class="px-4 py-3 space-y-4">
+            <div class="card">
+                <div class="aspect-[16/9] bg-gray-200">
+                    <img src="https://picsum.photos/600/338?random=11" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">企业家俱乐部茶话会</h3>
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <i class="fa fa-calendar mr-2"></i>
+                        <span>6月15日 周四 14:00-17:00</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-primary text-sm">已报名</span>
+                        <button class="btn-outline text-xs py-1 px-2 text-red-500 border-red-500">取消报名</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 我的优惠券 ==================== -->
+    <div id="sub-my-coupons" class="sub-page hidden">
+        <div class="px-4 py-3 space-y-4">
+            <div class="card flex overflow-hidden">
+                <div class="w-24 bg-primary text-white flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold">¥39</span>
+                    <span class="text-xs">门票代金券</span>
+                </div>
+                <div class="flex-1 p-4">
+                    <h3 class="font-bold mb-1">九悦汤泉通用门票券</h3>
+                    <p class="text-xs text-gray-500 mb-2">满39元可用</p>
+                    <p class="text-xs text-gray-400">有效期至：2026-07-03</p>
+                </div>
+            </div>
+            <div class="card flex overflow-hidden">
+                <div class="w-24 bg-accent text-white flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold">¥50</span>
+                    <span class="text-xs">SPA代金券</span>
+                </div>
+                <div class="flex-1 p-4">
+                    <h3 class="font-bold mb-1">九悦SPA通用代金券</h3>
+                    <p class="text-xs text-gray-500 mb-2">满169元可用</p>
+                    <p class="text-xs text-gray-400">有效期至：2026-07-03</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 子页面 - 我的订单 ==================== -->
+    <div id="sub-my-orders" class="sub-page hidden">
+        <div class="px-4 py-3 space-y-4">
+            <div class="card p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-sm text-gray-500">订单号：202606030001</span>
+                    <span class="text-success text-sm">已完成</span>
+                </div>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                        <img src="https://picsum.photos/100/100?random=50" class="w-full h-full object-cover" alt="">
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-medium">九悦汤泉单人门票</h3>
+                        <p class="text-xs text-gray-500">x1</p>
+                    </div>
+                    <span class="font-bold">¥39.9</span>
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button class="btn-outline text-xs py-1 px-2">申请退款</button>
+                    <button class="btn-primary text-xs py-1 px-2">再次购买</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 通用子页面模板 ==================== -->
+    <div id="sub-member-center" class="sub-page hidden">
+        <div class="px-4 py-8 text-center">
+            <i class="fa fa-vcard-o text-gray-300 text-5xl mb-4"></i>
+            <h2 class="text-xl font-bold mb-2">会员中心</h2>
+            <p class="text-gray-500">即将上线，敬请期待</p>
+        </div>
+    </div>
+
+    <div id="sub-merchant-join" class="sub-page hidden">
+        <div class="px-4 py-8 text-center">
+            <i class="fa fa-building-o text-gray-300 text-5xl mb-4"></i>
+            <h2 class="text-xl font-bold mb-2">商家入驻</h2>
+            <p class="text-gray-500">即将上线，敬请期待</p>
+        </div>
+    </div>
+
+    <div id="sub-help" class="sub-page hidden">
+        <div class="px-4 py-8 text-center">
+            <i class="fa fa-question-circle-o text-gray-300 text-5xl mb-4"></i>
+            <h2 class="text-xl font-bold mb-2">帮助与客服</h2>
+            <p class="text-gray-500">即将上线，敬请期待</p>
+        </div>
+    </div>
+</div>
+
+<!-- 底部Tab栏（5个固定入口） -->
+<div id="mainTab" class="fixed bottom-0 left-0 w-full h-12 bg-white border-t border-gray-100 flex items-center justify-around z-50">
+    <button onclick="switchTab('home')" id="tab-home" class="tab-active flex flex-col items-center justify-center">
+        <i class="fa fa-home text-lg"></i>
+        <span class="text-xs mt-1">首页</span>
+    </button>
+    <button onclick="switchTab('event')" id="tab-event" class="text-gray-400 flex flex-col items-center justify-center">
+        <i class="fa fa-calendar text-lg"></i>
+        <span class="text-xs mt-1">活动</span>
+    </button>
+    <button onclick="switchTab('publish')" id="tab-publish" class="text-gray-400 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center -mt-2">
+            <i class="fa fa-plus text-white text-lg"></i>
+        </div>
+        <span class="text-xs mt-1">发布</span>
+    </button>
+    <button onclick="switchTab('live')" id="tab-live" class="text-gray-400 flex flex-col items-center justify-center">
+        <i class="fa fa-video-camera text-lg"></i>
+        <span class="text-xs mt-1">直播</span>
+    </button>
+    <button onclick="switchTab('mine')" id="tab-mine" class="text-gray-400 flex flex-col items-center justify-center">
+        <i class="fa fa-user text-lg"></i>
+        <span class="text-xs mt-1">我的</span>
+    </button>
+</div>
+
+<script>
+// 全局变量
+let currentTab = 'home';
+let currentCategory = 'tangquan';
+let currentEventCategory = 'all';
+let currentLiveCategory = 'all';
+let pageHistory = [];
+
+// ==================== 首页数据 ====================
+const feedData = {
+    tangquan: [
+        {
+            avatar: 'https://picsum.photos/100/100?random=1',
+            nickname: '小幸福',
+            level: '悦享会员',
+            levelColor: 'primary',
+            image: 'https://picsum.photos/300/400?random=1',
+            title: '周末和闺蜜来九悦汤泉放松，太舒服了！水果无限畅吃，环境也超棒',
+            tags: ['#九悦幸福汤泉', '#养生日常'],
+            likes: 128,
+            comments: 23,
+            collects: 56
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=2',
+            nickname: '养生达人',
+            level: '悦养会员',
+            levelColor: 'secondary',
+            image: 'https://picsum.photos/300/400?random=5',
+            title: '抚顺最好的汤泉没有之一！搓澡师傅手艺一绝，强烈推荐',
+            tags: ['#九悦幸福汤泉', '#抚顺探店'],
+            likes: 256,
+            comments: 45,
+            collects: 89
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=3',
+            nickname: '周末去哪玩',
+            level: '悦享会员',
+            levelColor: 'primary',
+            image: 'https://picsum.photos/300/400?random=6',
+            title: '下雨天和汤泉最配了！在九悦待了一整天，太治愈了',
+            tags: ['#九悦幸福汤泉', '#下雨天去哪玩'],
+            likes: 189,
+            comments: 34,
+            collects: 78
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=4',
+            nickname: '美食博主',
+            level: '悦福会员',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=7',
+            title: '九悦汤泉的自助餐也太好吃了吧！小龙虾、海鲜随便吃',
+            tags: ['#九悦幸福汤泉', '#美食探店'],
+            likes: 312,
+            comments: 67,
+            collects: 123
+        }
+    ],
+    shengyan: [
+        {
+            avatar: 'https://picsum.photos/100/100?random=10',
+            nickname: '李女士',
+            level: '悦福会员',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=3',
+            title: '给宝宝办的生日宴太惊喜了，九悦的服务真的没话说，布置得超漂亮',
+            tags: ['#九悦幸福生日宴', '#家庭幸福时刻'],
+            likes: 312,
+            comments: 67,
+            collects: 123
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=11',
+            nickname: '幸福妈妈',
+            level: '悦养会员',
+            levelColor: 'secondary',
+            image: 'https://picsum.photos/300/400?random=8',
+            title: '女儿的10岁生日宴，感谢九悦的所有工作人员，给了孩子一个完美的生日',
+            tags: ['#九悦幸福生日宴', '#生日快乐'],
+            likes: 256,
+            comments: 45,
+            collects: 89
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=12',
+            nickname: '张先生',
+            level: '悦享会员',
+            levelColor: 'primary',
+            image: 'https://picsum.photos/300/400?random=9',
+            title: '给老婆办的生日派对，她特别开心！九悦的生日宴套餐太值了',
+            tags: ['#九悦幸福生日宴', '#浪漫惊喜'],
+            likes: 189,
+            comments: 34,
+            collects: 78
+        }
+    ],
+    julebu: [
+        {
+            avatar: 'https://picsum.photos/100/100?random=20',
+            nickname: '王总',
+            level: '快乐合伙人',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=2',
+            title: '企业家俱乐部第一次茶话会圆满结束，认识了很多优秀的朋友',
+            tags: ['#企业家快乐俱乐部', '#幸福聚会'],
+            likes: 256,
+            comments: 45,
+            collects: 89
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=21',
+            nickname: '李总',
+            level: '快乐合伙人',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=10',
+            title: '俱乐部的高尔夫活动太赞了！大家玩得都很开心，期待下次',
+            tags: ['#企业家快乐俱乐部', '#高尔夫'],
+            likes: 189,
+            comments: 34,
+            collects: 78
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=22',
+            nickname: '张总',
+            level: '快乐合伙人',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=11',
+            title: '感谢九悦提供这么好的平台，让我们企业家有了交流的地方',
+            tags: ['#企业家快乐俱乐部', '#资源对接'],
+            likes: 128,
+            comments: 23,
+            collects: 56
+        }
+    ],
+    shangxie: [
+        {
+            avatar: 'https://picsum.photos/100/100?random=30',
+            nickname: '张会长',
+            level: '快乐合伙人',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=4',
+            title: '商协会活动基地揭牌仪式，以后大家有了聚会的好地方',
+            tags: ['#商协会活动基地', '#幸福聚会'],
+            likes: 189,
+            comments: 34,
+            collects: 78
+        },
+        {
+            avatar: 'https://picsum.photos/100/100?random=31',
+            nickname: '刘秘书长',
+            level: '悦福会员',
+            levelColor: 'accent',
+            image: 'https://picsum.photos/300/400?random=12',
+            title: '第一次在九悦举办商协会活动，场地和服务都非常好，强烈推荐',
+            tags: ['#商协会活动基地', '#活动场地'],
+            likes: 128,
+            comments: 23,
+            collects: 56
+        }
+    ],
+    all: []
+}
+
+// ==================== 活动页数据 ====================
+const eventData = {
+    all: [],
+    tangquan: [
+        {
+            image: 'https://picsum.photos/600/338?random=10',
+            title: '九悦汤泉周末体验日',
+            time: '6月10日 周六 10:00-22:00',
+            location: '九悦幸福汤泉（抚顺店）',
+            people: '86/100',
+            price: '¥39.9',
+            priceColor: 'primary'
+        },
+        {
+            image: 'https://picsum.photos/600/338?random=13',
+            title: '父亲节汤泉特惠活动',
+            time: '6月16日 周日 10:00-22:00',
+            location: '九悦幸福汤泉（抚顺店）',
+            people: '45/200',
+            price: '¥29.9',
+            priceColor: 'primary'
+        }
+    ],
+    shengyan: [
+        {
+            image: 'https://picsum.photos/600/338?random=12',
+            title: '六月生日派对专场',
+            time: '6月18日 周日 18:00-21:00',
+            location: '九悦幸福生日宴大厅',
+            people: '12/50',
+            price: '¥199/人',
+            priceColor: 'primary'
+        }
+    ],
+    julebu: [
+        {
+            image: 'https://picsum.photos/600/338?random=11',
+            title: '企业家俱乐部茶话会',
+            time: '6月15日 周四 14:00-17:00',
+            location: '九悦幸福·企业家俱乐部',
+            people: '23/30',
+            price: '免费',
+            priceColor: 'success'
+        },
+        {
+            image: 'https://picsum.photos/600/338?random=14',
+            title: '企业家高尔夫邀请赛',
+            time: '6月22日 周四 09:00-12:00',
+            location: '抚顺高尔夫俱乐部',
+            people: '15/20',
+            price: '免费',
+            priceColor: 'success'
+        }
+    ],
+    shangxie: [
+        {
+            image: 'https://picsum.photos/600/338?random=15',
+            title: '商协会资源对接会',
+            time: '6月20日 周二 14:00-17:00',
+            location: '九悦幸福·商协会活动基地',
+            people: '32/50',
+            price: '免费',
+            priceColor: 'success'
+        }
+    ],
+    yangsheng: [
+        {
+            image: 'https://picsum.photos/600/338?random=16',
+            title: '中医养生知识分享会',
+            time: '6月12日 周三 14:00-16:00',
+            location: '九悦幸福汤泉会议室',
+            people: '28/40',
+            price: '免费',
+            priceColor: 'success'
+        }
+    ],
+    tuanjian: [
+        {
+            image: 'https://picsum.photos/600/338?random=17',
+            title: '企业团建特惠套餐',
+            time: '长期有效',
+            location: '九悦幸福汤泉（抚顺店）',
+            people: '不限',
+            price: '¥129/人',
+            priceColor: 'primary'
+        }
+    ]
+}
+
+// ==================== 直播页数据 ====================
+const liveData = {
+    all: [],
+    tangquan: [
+        {
+            image: 'https://picsum.photos/300/533?random=20',
+            title: '九悦汤泉日常慢直播，欢迎大家来玩',
+            author: '九悦幸福汤泉',
+            viewers: 1286,
+            status: 'live'
+        },
+        {
+            image: 'https://picsum.photos/300/533?random=24',
+            title: '九悦汤泉水果自助直播',
+            author: '美食主播小美',
+            viewers: 892,
+            status: 'live'
+        }
+    ],
+    shengyan: [
+        {
+            image: 'https://picsum.photos/300/533?random=25',
+            title: '宝宝生日宴现场直播',
+            author: '李女士',
+            viewers: 567,
+            status: 'live'
+        }
+    ],
+    julebu: [
+        {
+            image: 'https://picsum.photos/300/533?random=21',
+            title: '企业家俱乐部茶话会现场直播',
+            author: '王总',
+            viewers: 892,
+            status: 'live'
+        }
+    ],
+    shangxie: [
+        {
+            image: 'https://picsum.photos/300/533?random=26',
+            title: '商协会资源对接会预告',
+            author: '张会长',
+            viewers: 0,
+            status: '预告',
+            time: '6月20日 14:00'
+        }
+    ],
+    yangsheng: [
+        {
+            image: 'https://picsum.photos/300/533?random=23',
+            title: '中医养生知识分享会',
+            author: '中医张教授',
+            viewers: 0,
+            status: '预告',
+            time: '6月12日 14:00'
+        }
+    ],
+    yule: [
+        {
+            image: 'https://picsum.photos/300/533?random=27',
+            title: '九悦KTV唱歌直播',
+            author: '唱歌达人小李',
+            viewers: 1234,
+            status: 'live'
+        }
+    ]
+}
+
+// ==================== 初始化函数 ====================
+function initAllData() {
+    // 合并首页全部内容
+    feedData.all = [
+        ...feedData.tangquan,
+        ...feedData.shengyan,
+        ...feedData.julebu,
+        ...feedData.shangxie
+    ];
+    feedData.all.sort(() => Math.random() - 0.5);
+
+    // 合并活动全部内容
+    eventData.all = [
+        ...eventData.tangquan,
+        ...eventData.shengyan,
+        ...eventData.julebu,
+        ...eventData.shangxie,
+        ...eventData.yangsheng,
+        ...eventData.tuanjian
+    ];
+
+    // 合并直播全部内容
+    liveData.all = [
+        ...liveData.tangquan,
+        ...liveData.shengyan,
+        ...liveData.julebu,
+        ...liveData.shangxie,
+        ...liveData.yangsheng,
+        ...liveData.yule
+    ];
+}
+
+// ==================== 首页函数 ====================
+function switchCategory(category) {
+    document.querySelectorAll('[id^="cat-"]').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('text-gray-500');
+    });
+    document.getElementById(`cat-${category}`).classList.add('tab-active');
+    document.getElementById(`cat-${category}`).classList.remove('text-gray-500');
+    
+    currentCategory = category;
+    renderFeed();
+}
+
+function renderFeed() {
+    const container = document.getElementById('feed-container');
+    const data = feedData[currentCategory];
+    
+    let html = '';
+    data.forEach(item => {
+        html += `
+        <div class="card m-1">
+            <div class="aspect-[3/4] bg-gray-200 relative">
+                <img src="${item.image}" class="w-full h-full object-cover" alt="">
+            </div>
+            <div class="p-2">
+                <div class="flex items-center gap-1 mb-2">
+                    <div class="w-6 h-6 rounded-full bg-gray-200 overflow-hidden">
+                        <img src="${item.avatar}" class="w-full h-full object-cover" alt="">
+                    </div>
+                    <span class="text-xs font-medium">${item.nickname}</span>
+                    <span class="text-xs bg-${item.levelColor}/10 text-${item.levelColor} px-1 rounded">${item.level}</span>
+                </div>
+                <p class="text-sm line-clamp-2 mb-1">${item.title}</p>
+                <div class="flex flex-wrap gap-1 mb-2">
+                    ${item.tags.map(tag => `<span class="text-xs text-gray-400">${tag}</span>`).join('')}
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400">
+                    <span><i class="fa fa-heart mr-1"></i>${item.likes}</span>
+                    <span><i class="fa fa-comment mr-1"></i>${item.comments}</span>
+                    <span><i class="fa fa-star mr-1"></i>${item.collects}</span>
+                </div>
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+// ==================== 活动页函数 ====================
+function switchEventCategory(category) {
+    document.querySelectorAll('[id^="event-"]').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('text-gray-500');
+    });
+    document.getElementById(`event-${category}`).classList.add('tab-active');
+    document.getElementById(`event-${category}`).classList.remove('text-gray-500');
+    
+    currentEventCategory = category;
+    renderEvents();
+}
+
+function renderEvents() {
+    const container = document.getElementById('event-container');
+    const data = eventData[currentEventCategory];
+    
+    if(data.length === 0) {
+        container.innerHTML = '<div class="text-center py-16 text-gray-400"><i class="fa fa-calendar-o text-5xl mb-4"></i><p>暂无相关活动</p></div>';
+        return;
+    }
+    
+    let html = '';
+    data.forEach(item => {
+        html += `
+        <div class="card">
+            <div class="aspect-[16/9] bg-gray-200">
+                <img src="${item.image}" class="w-full h-full object-cover" alt="">
+            </div>
+            <div class="p-4">
+                <h3 class="font-bold text-lg mb-2">${item.title}</h3>
+                <div class="flex items-center text-sm text-gray-500 mb-2">
+                    <i class="fa fa-calendar mr-2"></i>
+                    <span>${item.time}</span>
+                </div>
+                <div class="flex items-center text-sm text-gray-500 mb-2">
+                    <i class="fa fa-map-marker mr-2"></i>
+                    <span>${item.location}</span>
+                </div>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fa fa-users mr-2"></i>
+                        <span>已报名 ${item.people}人</span>
+                    </div>
+                    <span class="text-${item.priceColor} font-bold text-lg">${item.price}</span>
+                </div>
+                <button class="btn-primary w-full">立即报名</button>
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+// ==================== 直播页函数 ====================
+function switchLiveCategory(category) {
+    document.querySelectorAll('[id^="live-"]').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('text-gray-500');
+    });
+    document.getElementById(`live-${category}`).classList.add('tab-active');
+    document.getElementById(`live-${category}`).classList.remove('text-gray-500');
+    
+    currentLiveCategory = category;
+    renderLives();
+}
+
+function renderLives() {
+    const container = document.getElementById('live-container');
+    const data = liveData[currentLiveCategory];
+    
+    if(data.length === 0) {
+        container.innerHTML = '<div class="col-span-2 text-center py-16 text-gray-400"><i class="fa fa-video-camera text-5xl mb-4"></i><p>暂无相关直播</p></div>';
+        return;
+    }
+    
+    let html = '';
+    data.forEach(item => {
+        if(item.status === 'live') {
+            html += `
+            <div class="card m-1 relative">
+                <div class="aspect-[9/16] bg-gray-200">
+                    <img src="${item.image}" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full flex items-center">
+                    <span class="w-2 h-2 bg-white rounded-full mr-1 animate-pulse"></span>
+                    直播中
+                </div>
+                <div class="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                    <i class="fa fa-eye mr-1"></i>${item.viewers}
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                    <p class="text-white text-sm line-clamp-1">${item.title}</p>
+                    <p class="text-white/80 text-xs mt-1">${item.author}</p>
+                </div>
+            </div>`;
+        } else {
+            html += `
+            <div class="card m-1 relative">
+                <div class="aspect-[9/16] bg-gray-200">
+                    <img src="${item.image}" class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="absolute top-2 left-2 bg-gray-500 text-white text-xs px-2 py-1 rounded-full">
+                    预告
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                    <p class="text-white text-sm line-clamp-1">${item.title}</p>
+                    <p class="text-white/80 text-xs mt-1">${item.time}</p>
+                </div>
+            </div>`;
+        }
+    });
+    
+    container.innerHTML = html;
+}
+
+// ==================== 页面切换函数 ====================
+function switchTab(tab) {
+    // 隐藏所有主页面
+    document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.add('hidden'));
+    // 隐藏所有子页面
+    document.querySelectorAll('[id^="sub-"]').forEach(el => el.classList.add('hidden'));
+    // 显示主Tab
+    document.getElementById('mainTab').classList.remove('hidden');
+    // 隐藏返回按钮
+    document.getElementById('backBtn').classList.add('hidden');
+    // 清空历史记录
+    pageHistory = [];
+    
+    // 取消所有Tab的激活状态
+    document.querySelectorAll('[id^="tab-"]').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('text-gray-400');
+    });
+    // 显示当前页面
+    document.getElementById(`page-${tab}`).classList.remove('hidden');
+    // 激活当前Tab
+    document.getElementById(`tab-${tab}`).classList.add('tab-active');
+    document.getElementById(`tab-${tab}`).classList.remove('text-gray-400');
+    // 更新页面标题
+    const titles = {
+        home: '九悦幸福',
+        event: '活动',
+        publish: '发布',
+        live: '直播',
+        mine: '我的'
+    }
+    document.getElementById('pageTitle').innerText = titles[tab];
+    
+    currentTab = tab;
+}
+
+function goToSubPage(subPage) {
+    // 隐藏当前页面
+    document.getElementById(`page-${currentTab}`).classList.add('hidden');
+    // 隐藏底部Tab
+    document.getElementById('mainTab').classList.add('hidden');
+    // 显示返回按钮
+    document.getElementById('backBtn').classList.remove('hidden');
+    // 显示子页面
+    document.getElementById(`sub-${subPage}`).classList.remove('hidden');
+    // 更新页面标题
+    const subTitles = {
+        'publish-image': '发图文',
+        'publish-event': '发起活动',
+        'publish-live': '开直播',
+        'my-posts': '我的发布',
+        'my-events': '我的活动',
+        'my-joined': '我报名的',
+        'my-coupons': '我的优惠券',
+        'my-orders': '我的订单',
+        'member-center': '会员中心',
+        'merchant-join': '商家入驻',
+        'help': '帮助与客服'
+    }
+    document.getElementById('pageTitle').innerText = subTitles[subPage];
+    // 记录历史
+    pageHistory.push(currentTab);
+}
+
+function goBack() {
+    if(pageHistory.length > 0) {
+        const lastPage = pageHistory.pop();
+        // 隐藏所有子页面
+        document.querySelectorAll('[id^="sub-"]').forEach(el => el.classList.add('hidden'));
+        // 显示主页面
+        document.getElementById(`page-${lastPage}`).classList.remove('hidden');
+        // 显示底部Tab
+        document.getElementById('mainTab').classList.remove('hidden');
+        // 隐藏返回按钮
+        document.getElementById('backBtn').classList.add('hidden');
+        // 更新页面标题
+        const titles = {
+            home: '九悦幸福',
+            event: '活动',
+            publish: '发布',
+            live: '直播',
+            mine: '我的'
+        }
+        document.getElementById('pageTitle').innerText = titles[lastPage];
+        
+        currentTab = lastPage;
+    }
+}
+
+// ==================== 页面初始化 ====================
+document.addEventListener('DOMContentLoaded', () => {
+    initAllData();
+    renderFeed();
+    renderEvents();
+    renderLives();
+});
+</script>
+</body>
+</html>
